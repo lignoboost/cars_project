@@ -52,6 +52,7 @@ df=df_from_fg
 
 #--------------------------------------
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+server=app.server
 
 app.layout = dbc.Container([
     dcc.Store(id='redirect-store'),
