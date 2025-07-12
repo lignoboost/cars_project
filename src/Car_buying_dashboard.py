@@ -44,9 +44,6 @@ df_from_fg.rename(columns={
 
 #--------------------------------------
 df=df_from_fg
-#df.info()
-#df = pd.read_csv('data/autoscout_data_with_predictions.csv')
-
 
 # Dashboard code
 
