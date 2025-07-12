@@ -8,16 +8,16 @@ import pandas as pd
 import numpy as np
 import webbrowser
 import threading
-from Car_buying_plot_functions import price_vs_age_plot_scatter
-from Car_buying_plot_functions import custom_boxplot_no_whiskers
-from paths import PARENT_DIR
+from src.Car_buying_plot_functions import price_vs_age_plot_scatter
+from src.Car_buying_plot_functions import custom_boxplot_no_whiskers
+from src.paths import PARENT_DIR
 import hopsworks
 from dotenv import load_dotenv
 
 # Load data from Hopsworks
 
 #--------------------------------------
-sys.path.append(os.path.abspath("../src"))
+#sys.path.append(os.path.abspath("../src"))
 load_dotenv(PARENT_DIR/'.env')
 
 HOPSWORKS_PROJECT_NAME='Cars_project'
