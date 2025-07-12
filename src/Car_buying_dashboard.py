@@ -13,6 +13,7 @@ from src.Car_buying_plot_functions import custom_boxplot_no_whiskers
 from src.paths import PARENT_DIR
 import hopsworks
 from dotenv import load_dotenv
+import re
 
 # Load data from Hopsworks
 
@@ -48,7 +49,11 @@ df=df_from_fg
 # Dashboard code
 
 #--------------------------------------
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(
+    __name__,
+    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    assets_folder=os.path.join(PARENT_DIR, 'assets')
+)
 server=app.server
 
 app.layout = dbc.Container([
@@ -195,14 +200,22 @@ def update_plots(brand, model, age, mileage, power):
     return fig1, fig2
 
 # 🔁 New Callback: Update image based on model selection
+
+
+def sanitize_model_name(model):
+    return re.sub(r'[^a-zA-Z0-9\-]', '', model.lower())
+
 @app.callback(
     Output('car-image', 'src'),
     Input('model-dropdown', 'value')
 )
 def update_car_image(model):
     if model:
-        return f"/assets/{model.lower()}.png"
+        safe_name = sanitize_model_name(model)
+        return f"/assets/{safe_name}.png"  # 🔥 This is now correct
     return "/assets/default.png"
+
+
 
 @app.callback(
     Output('redirect-store', 'data'),
