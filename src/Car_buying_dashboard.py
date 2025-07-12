@@ -62,7 +62,7 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             html.Div([
-                html.H4("Filter Vehicle Data", className="mb-3"),
+                html.H4("", className="mb-3"),
 
                 dbc.Row([
                     dbc.Col([
@@ -201,7 +201,6 @@ def update_plots(brand, model, age, mileage, power):
 
 # 🔁 New Callback: Update image based on model selection
 
-
 def sanitize_model_name(model):
     return re.sub(r'[^a-zA-Z0-9\-]', '', model.lower())
 
@@ -212,22 +211,9 @@ def sanitize_model_name(model):
 def update_car_image(model):
     if model:
         safe_name = sanitize_model_name(model)
-        return f"/assets/{safe_name}.png"  # 🔥 This is now correct
+        return f"/assets/{safe_name}.png" 
     return "/assets/default.png"
 
-
-
-@app.callback(
-    Output('redirect-store', 'data'),
-    Input('price-age-plot', 'clickData'),
-    prevent_initial_call=True
-)
-def open_listing(clickData):
-    if clickData and 'customdata' in clickData['points'][0]:
-        relative_url = clickData['points'][0]['customdata'][0]
-        full_url = f'https://www.autoscout24.nl/{relative_url}'
-        threading.Thread(target=lambda: webbrowser.open_new_tab(full_url)).start()
-    return dash.no_update
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=8050)

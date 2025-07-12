@@ -94,7 +94,7 @@ def price_vs_age_plot_scatter(df_filtered, brand_name, model_name):
         ),
         margin=dict(t=60, l=50, r=20, b=80),
         title=dict(
-            text="Vehicles for sale: Brand Model",  # 🔥 Required
+            text="Vehicles for sale: Brand Model", 
             x=0,
             xanchor='left',
             pad=dict(t=10),
@@ -104,19 +104,19 @@ def price_vs_age_plot_scatter(df_filtered, brand_name, model_name):
 
     
 
-    # Add colorbar annotations
-    fig.add_annotation(
-        text="<b><span style='color:red'>OVERVALUED</span>          <span style='color:blue'>UNDERVALUED</span></b>",
-        showarrow=False,
-        xref="paper",
-        yref="paper",
-        x=1.15,
-        y=0.5,
-        textangle=-90,
-        align="center",
-        font=dict(size=12),
-        bgcolor="rgba(255,255,255,0.0)"
-    )
+    # # Add colorbar annotations
+    # fig.add_annotation(
+    #     text="<b><span style='color:red'>OVERVALUED</span>          <span style='color:blue'>UNDERVALUED</span></b>",
+    #     showarrow=False,
+    #     xref="paper",
+    #     yref="paper",
+    #     x=1.15,
+    #     y=0.5,
+    #     textangle=-90,
+    #     align="center",
+    #     font=dict(size=12),
+    #     bgcolor="rgba(255,255,255,0.0)"
+    # )
 
     return fig
 
