@@ -48,10 +48,12 @@ def price_vs_age_plot_scatter(df_filtered, brand_name, model_name):
                 fuel_df['predicted_price'], fuel_df['pct_diff']
             ], axis=-1),
             marker=dict(
-                size=fuel_df['power_HP'],
-                sizemode='area',
-                sizeref=2.*max(fuel_df['power_HP'])/(12.**2),
-                sizemin=2,
+                # size=fuel_df['power_HP'],
+                # sizemode='area',
+                # sizeref=2.*max(fuel_df['power_HP'])/(12.**2),
+                # sizemin=2,
+                opacity=0.65,
+                size=11,
                 color=fuel_df['pct_diff'],
                 colorscale='RdBu',
                 cmin=vmin,
