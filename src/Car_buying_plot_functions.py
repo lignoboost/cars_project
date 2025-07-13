@@ -26,97 +26,96 @@ def price_vs_age_plot_scatter(df_filtered, brand_name, model_name):
     df_sub = df_filtered[df_filtered['model'] == model_name]
 
     if df_sub.empty:
-        return px.scatter(title="No listings found for selected model")
+        return go.Figure().update_layout(title="No listings found for selected model")
 
-    # Color scaling
     abs_max = max(abs(df_sub['pct_diff'].min()), abs(df_sub['pct_diff'].max()))
     vmin, vmax = -abs_max, abs_max
 
-    fig = px.scatter(
-        df_sub,
-        x='vehicle_age',
-        y='price',
-        color='pct_diff',
-        size='power_HP',
-        size_max=12,
-        color_continuous_scale='RdBu',
-        range_color=(vmin, vmax),
-        color_continuous_midpoint=0,
-        title=f' Vehicles for sale: {brand_name} {model_name} ',
-        labels={
-            'vehicle_age': 'Vehicle Age (months)',
-            'price': 'Price (€)',
-            'pct_diff': '% deviation',
-            'power_HP': 'Power (HP)'
-        },
-        custom_data=['URL', 'fuel', 'price', 'predicted_price', 'pct_diff']
-    )
+    symbol_map = {
+        fuel: i for i, fuel in enumerate(df_sub['fuel'].unique())
+    }
 
-    fig.update_traces(
-        marker_line_color='black',
-        marker_line_width=1,
-        marker_sizemin=2,
-        hovertemplate=(
-            "Age: %{x} months<br>"
-            "Price: €%{customdata[2]:,.0f}<br>"
-            "Predicted: €%{customdata[3]:,.0f}<br>"
-            "Deviation: %{customdata[4]:.1f}%<br>"
-            "Fuel: %{customdata[1]}<br>"
-            "Power: %{marker.size} HP<br>"
-            "<extra></extra>"
-        )
-    )
+    fig = go.Figure()
 
+    for fuel, fuel_df in df_sub.groupby('fuel'):
+        fig.add_trace(go.Scatter(
+            x=fuel_df['vehicle_age'],
+            y=fuel_df['price'],
+            mode='markers',
+            name=fuel,
+            customdata=np.stack([
+                fuel_df['URL'], fuel_df['fuel'], fuel_df['price'],
+                fuel_df['predicted_price'], fuel_df['pct_diff']
+            ], axis=-1),
+            marker=dict(
+                size=fuel_df['power_HP'],
+                sizemode='area',
+                sizeref=2.*max(fuel_df['power_HP'])/(12.**2),
+                sizemin=2,
+                color=fuel_df['pct_diff'],
+                colorscale='RdBu',
+                cmin=vmin,
+                cmax=vmax,
+                colorbar=dict(
+                    title="Deviation from predicted price",
+                    title_side="right",
+                    title_font=dict(size=14),
+                    tickvals=[vmin, 0, vmax],
+                    ticktext=[f"{int(vmin)}%", "0%", f"{int(vmax)}%"],
+                    lenmode="pixels",
+                    len=450,
+                    thickness=18
+                ),
+                line=dict(color='black', width=1),
+                symbol=symbol_map[fuel]
+            ),
+            hovertemplate=(
+                "Age: %{x} months<br>"
+                "Price: €%{customdata[2]:,.0f}<br>"
+                "Predicted: €%{customdata[3]:,.0f}<br>"
+                "Deviation: %{customdata[4]:.1f}%<br>"
+                "Fuel: %{customdata[1]}<br>"
+                "Power: %{marker.size} HP<br>"
+                "<extra></extra>"
+            )
+        ))
 
     fig.update_layout(
-        template='plotly_white',
-        coloraxis_colorbar=dict(
-            title=None,
-            tickvals=[vmin, 0, vmax],
-            ticktext=[f"{int(vmin)}%", "0%", f"{int(vmax)}%"],
-            lenmode="pixels",
-            len=450,
-            thickness=18
-        ),
-        xaxis=dict(
-            showline=True,
-            linecolor='gray',
-            linewidth=1,
-            mirror=True,
-            showgrid=True
-        ),
-        yaxis=dict(
-            showline=True,
-            linecolor='gray',
-            linewidth=1,
-            mirror=True,
-            showgrid=True
-        ),
-        margin=dict(t=60, l=50, r=20, b=80),
-        title=dict(
-            text="Vehicles for sale: Brand Model", 
-            x=0,
-            xanchor='left',
-            pad=dict(t=10),
-            font=dict(size=16)
-        )
-    )
+    template='plotly_white',
+    title=dict(
+        text=f"Vehicles for sale: {brand_name} {model_name}",
+        x=0,
+        xanchor='left',
+        pad=dict(t=10),
+        font=dict(size=16)
+    ),
+    margin=dict(t=60, l=50, r=20, b=80),
+    xaxis=dict(
+        title='Vehicle Age (months)',
+        showline=True, linecolor='gray', linewidth=1, mirror=True, showgrid=True
+    ),
+    yaxis=dict(
+        title='Price (€)',
+        showline=True, linecolor='gray', linewidth=1, mirror=True, showgrid=True
+    ),
+    legend=dict(
+    title=dict(
+        text='<b>Fuel type</b>',
+        font=dict(size=12),
+        side='top'  # This keeps it visually above the legend entries
+    ),
+    x=1,
+    y=1,
+    xanchor='right',
+    yanchor='top',
+    bgcolor='rgba(255,255,255,0.7)',
+    bordercolor='gray',
+    borderwidth=1,
+    font=dict(size=12)
+)
 
-    
+)
 
-    # # Add colorbar annotations
-    # fig.add_annotation(
-    #     text="<b><span style='color:red'>OVERVALUED</span>          <span style='color:blue'>UNDERVALUED</span></b>",
-    #     showarrow=False,
-    #     xref="paper",
-    #     yref="paper",
-    #     x=1.15,
-    #     y=0.5,
-    #     textangle=-90,
-    #     align="center",
-    #     font=dict(size=12),
-    #     bgcolor="rgba(255,255,255,0.0)"
-    # )
 
     return fig
 

@@ -70,13 +70,16 @@ app.layout = dbc.Container([
                         dcc.Dropdown(
                             id='brand-dropdown',
                             options=[{'label': b, 'value': b} for b in df['brand'].unique()],
-                            value=df['brand'].unique()[0]
+                            value=df['brand'].unique()[0],
+                            clearable=False
                         ),
                     ], width=6),
 
                     dbc.Col([
                         html.H5("Model"),
-                        dcc.Dropdown(id='model-dropdown'),
+                        dcc.Dropdown(id='model-dropdown',
+                                     clearable=False
+                                     ),
                     ], width=6)
                 ]),
 
@@ -210,8 +213,8 @@ def sanitize_model_name(model):
 )
 def update_car_image(model):
     if model:
-        safe_name = sanitize_model_name(model)
-        return f"/assets/{safe_name}.png" 
+        #safe_name = sanitize_model_name(model)
+        return f"/assets/{model}.png" 
     return "/assets/default.png"
 
 
